@@ -1,0 +1,23 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "This reCamera Pro device is already configured."
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the device.",
+      "invalid_auth": "Invalid username or password."
+    },
+    "step": {
+      "user": {
+        "title": "Add reCamera Pro",
+        "description": "Connect to a reCamera Pro on your local network.",
+        "data": {
+          "device_name": "Device name",
+          "host": "IP address",
+          "device_username": "Device username",
+          "device_password": "Device password"
+        }
+      }
+    }
+  }
+}

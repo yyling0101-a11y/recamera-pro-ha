@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 安装/运行产物（只应出现在已安装副本，不应入库）
+.recamera-pro-managed
+.recamera-pro-backups/
+recamera_pro_broker/
+credentials.json
+
+# OS / 编辑器
+.DS_Store
+Thumbs.db

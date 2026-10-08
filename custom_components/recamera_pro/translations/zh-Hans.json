@@ -1,0 +1,23 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "此 reCamera Pro 设备已经配置，无需重复添加。"
+    },
+    "error": {
+      "cannot_connect": "无法连接设备，请检查 IP 地址和网络。",
+      "invalid_auth": "用户名或密码错误。"
+    },
+    "step": {
+      "user": {
+        "title": "添加 reCamera Pro",
+        "description": "连接局域网中的 reCamera Pro 设备。",
+        "data": {
+          "device_name": "设备名称",
+          "host": "IP 地址",
+          "device_username": "设备用户名",
+          "device_password": "设备密码"
+        }
+      }
+    }
+  }
+}

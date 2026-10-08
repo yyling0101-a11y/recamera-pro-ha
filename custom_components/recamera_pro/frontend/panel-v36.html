@@ -1,0 +1,1232 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>reCamera Pro</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1016;
+      --surface: #121922;
+      --surface-2: #17212c;
+      --surface-3: #1c2835;
+      --line: #273747;
+      --line-hi: #38536b;
+      --text: #f4f8fb;
+      --muted: #8fa2b5;
+      --brand: #11b6e8;
+      --brand-2: #2d78ff;
+      --ok: #35d07f;
+      --bad: #ff626c;
+      --warn: #ffb84d;
+      --violet: #9b7cff;
+      --shadow: 0 18px 55px rgba(0, 0, 0, .26)
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 9px;
+      padding: 4px 8px;
+      border: 1px solid rgba(17, 182, 232, .35);
+      border-radius: 999px;
+      background: rgba(17, 182, 232, .12);
+      color: #63dafa;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      vertical-align: middle
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 78% -8%, rgba(17, 182, 232, .13), transparent 30%), radial-gradient(circle at 5% 25%, rgba(45, 120, 255, .09), transparent 28%), var(--bg);
+      color: var(--text);
+      font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 32px clamp(18px, 3vw, 42px) 100px
+    }
+
+    .view {
+      max-width: 1440px;
+      margin: auto
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px;
+      padding-right: 118px
+    }
+
+    .header-main {
+      flex: 1;
+      min-width: 0
+    }
+
+    .eyebrow {
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 4px
+    }
+
+    h1 {
+      font-size: clamp(24px, 2.4vw, 34px);
+      line-height: 1.15;
+      margin: 0;
+      letter-spacing: -.035em
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0
+    }
+
+    .subtitle,
+    .muted {
+      color: var(--muted)
+    }
+
+    .subtitle {
+      margin-top: 7px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px
+    }
+
+    .card,
+    .panel {
+      position: relative;
+      background: linear-gradient(145deg, rgba(25, 35, 46, .98), rgba(16, 23, 31, .98));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .025) inset
+    }
+
+    .card {
+      padding: 21px
+    }
+
+    .panel {
+      padding: 22px;
+      margin-bottom: 20px
+    }
+
+    .clickable {
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease
+    }
+
+    .clickable:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 90% 0%, rgba(17, 182, 232, .11), transparent 42%);
+      opacity: 0;
+      transition: .2s;
+      pointer-events: none
+    }
+
+    .clickable:hover {
+      transform: translateY(-4px);
+      border-color: var(--line-hi);
+      box-shadow: var(--shadow)
+    }
+
+    .clickable:hover:before {
+      opacity: 1
+    }
+
+    .card-top,
+    .panel-head,
+    .toolbar,
+    .device-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px
+    }
+
+    .device-card {
+      min-height: 230px;
+      padding: 0
+    }
+
+    .device-visual {
+      height: 94px;
+      background: linear-gradient(110deg, #10293b, #14364b 55%, #192840);
+      display: flex;
+      align-items: center;
+      padding: 0 23px;
+      border-bottom: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .camera-mark {
+      width: 62px;
+      height: 62px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(17, 182, 232, .25)
+    }
+
+    .camera-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .device-body {
+      padding: 20px 21px
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: 720;
+      letter-spacing: -.01em
+    }
+
+    .host {
+      font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+      color: #afc0ce;
+      margin-top: 5px
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px
+    }
+
+    .chip,
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: rgba(9, 14, 20, .4);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bad);
+      box-shadow: 0 0 0 3px rgba(255, 98, 108, .1)
+    }
+
+    .dot.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(53, 208, 127, .1)
+    }
+
+    .icon-btn,
+    .back {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer
+    }
+
+    .icon-btn {
+      border-radius: 10px;
+      padding: 7px 9px
+    }
+
+    .icon-btn:hover,
+    .back:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .back {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      font-size: 22px
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #1b2733;
+      color: var(--text);
+      border-radius: 11px;
+      padding: 9px 14px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: .17s
+    }
+
+    .btn:hover {
+      border-color: var(--line-hi);
+      background: #223343
+    }
+
+    .btn.primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      box-shadow: 0 8px 22px rgba(17, 182, 232, .18)
+    }
+
+    .btn.danger {
+      color: #ff8f95;
+      border-color: rgba(255, 98, 108, .3);
+      background: rgba(255, 98, 108, .08)
+    }
+
+    .btn.ghost {
+      background: transparent
+    }
+
+    .btn.small {
+      padding: 6px 10px;
+      font-size: 12px
+    }
+
+    .fab {
+      position: fixed;
+      right: 34px;
+      bottom: 30px;
+      width: 62px;
+      height: 62px;
+      border: 0;
+      border-radius: 19px;
+      background: linear-gradient(145deg, var(--brand), var(--brand-2));
+      color: #fff;
+      font-size: 34px;
+      cursor: pointer;
+      box-shadow: 0 16px 42px rgba(0, 145, 220, .34);
+      transition: .2s
+    }
+
+    .fab:hover {
+      transform: translateY(-3px) rotate(2deg)
+    }
+
+    .empty {
+      border: 1px dashed var(--line-hi);
+      border-radius: 22px;
+      padding: 76px 24px;
+      text-align: center;
+      background: rgba(18, 25, 34, .55);
+      color: var(--muted)
+    }
+
+    .empty-icon {
+      font-size: 34px;
+      margin-bottom: 10px
+    }
+
+    .feature-card {
+      min-height: 210px;
+      padding: 23px
+    }
+
+    .feature-card.mqtt {
+      --accent: var(--brand)
+    }
+
+    .feature-card.video {
+      --accent: #3c86ff
+    }
+
+    .feature-card.acoustics {
+      --accent: var(--violet)
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      margin-bottom: 21px
+    }
+
+    .feature-icon svg {
+      width: 26px;
+      height: 26px
+    }
+
+    .feature-card .meta {
+      min-height: 40px
+    }
+
+    .feature-card .status {
+      margin-top: 17px
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px
+    }
+
+    .metric {
+      background: rgba(16, 24, 32, .82);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px
+    }
+
+    .metric-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted)
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 750;
+      margin-top: 7px;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(300px, .78fr) minmax(460px, 1.22fr);
+      gap: 20px
+    }
+
+    .stack {
+      display: grid;
+      gap: 20px
+    }
+
+    .stack>.panel {
+      margin: 0
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr);
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(39, 55, 71, .72)
+    }
+
+    .kv:last-child {
+      border-bottom: 0
+    }
+
+    .kv>span:first-child {
+      color: var(--muted)
+    }
+
+    .field {
+      margin: 13px 0
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #0d141c;
+      color: var(--text);
+      padding: 11px 12px;
+      outline: none
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(17, 182, 232, .1)
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 12px
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 27px;
+      display: inline-block
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 99px;
+      background: #33404d;
+      cursor: pointer;
+      transition: .2s
+    }
+
+    .toggle-track:before {
+      content: "";
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #a7b3bf;
+      transition: .2s
+    }
+
+    .toggle-switch input:checked+.toggle-track {
+      background: linear-gradient(90deg, var(--brand), var(--brand-2))
+    }
+
+    .toggle-switch input:checked+.toggle-track:before {
+      transform: translateX(21px);
+      background: #fff
+    }
+
+    .messages {
+      max-height: 520px;
+      overflow: auto;
+      display: grid;
+      gap: 10px;
+      padding-right: 5px
+    }
+
+    .message {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #0e161f
+    }
+
+    .message-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .message-text {
+      margin-top: 7px;
+      white-space: pre-wrap;
+      word-break: break-word
+    }
+
+    .raw {
+      display: none;
+      margin-top: 9px;
+      padding: 10px;
+      background: #090e13;
+      border-radius: 9px;
+      overflow: auto;
+      color: #aebdca;
+      font: 11px/1.45 ui-monospace, monospace;
+      white-space: pre-wrap
+    }
+
+    .message img {
+      display: block;
+      max-width: 100%;
+      max-height: 320px;
+      border-radius: 10px;
+      margin-top: 10px
+    }
+
+    .rule-list {
+      display: grid;
+      gap: 10px
+    }
+
+    .rule {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: #0e161f;
+      border-radius: 14px;
+      padding: 12px
+    }
+
+    .rule-title {
+      font-weight: 680
+    }
+
+    .rule-detail {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px
+    }
+
+    .rule-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px
+    }
+
+    .scores {
+      display: grid;
+      gap: 13px
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: minmax(130px, 1fr) 3fr 72px;
+      gap: 12px;
+      align-items: center
+    }
+
+    .bar {
+      height: 10px;
+      background: #0a1016;
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .bar>i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--violet), var(--brand));
+      border-radius: 99px;
+      box-shadow: 0 0 15px rgba(155, 124, 255, .35)
+    }
+
+    .video-shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #05080b;
+      aspect-ratio: 16/9;
+      border: 1px solid #223242
+    }
+
+    .video-shell video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #05080b
+    }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(17, 25, 34, .62), rgba(4, 7, 10, .88));
+      transition: .2s
+    }
+
+    .video-overlay.hidden {
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .video-state {
+      text-align: center
+    }
+
+    .video-state strong {
+      display: block;
+      font-size: 18px
+    }
+
+    .video-state span {
+      display: block;
+      color: var(--muted);
+      margin-top: 5px
+    }
+
+    .video-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    .video-toolbar .status {
+      margin-left: auto
+    }
+
+    .notice {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 11px
+    }
+
+    .error {
+      display: none;
+      color: #ff9399;
+      margin-top: 10px
+    }
+
+    .busy {
+      opacity: .55;
+      pointer-events: none
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 5, 8, .78);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 20
+    }
+
+    .modal {
+      width: min(520px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: linear-gradient(145deg, #19232e, #111820);
+      border: 1px solid var(--line-hi);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow)
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px
+    }
+
+    .global-language {
+      position: fixed;
+      top: 24px;
+      right: 30px;
+      z-index: 12
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(12, 19, 27, .88);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(10px)
+    }
+
+    .lang-switch button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 7px 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .18s
+    }
+
+    .lang-switch button:hover {
+      color: #fff
+    }
+
+    .lang-switch button.active {
+      background: linear-gradient(135deg, rgba(17, 182, 232, .3), rgba(45, 120, 255, .34));
+      color: #fff;
+      box-shadow: 0 2px 9px rgba(17, 182, 232, .18)
+    }
+
+    .message-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(145deg, #111b25, #0d151d);
+      overflow: hidden
+    }
+
+    .message-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(39, 55, 71, .72);
+      background: rgba(22, 34, 45, .72)
+    }
+
+    .message-identity {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0
+    }
+
+    .task-badge,
+    .time-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      font-size: 11px;
+      white-space: nowrap
+    }
+
+    .task-badge {
+      padding: 5px 9px;
+      background: rgba(17, 182, 232, .13);
+      color: #59d7f7;
+      border: 1px solid rgba(17, 182, 232, .25);
+      font-weight: 700;
+      text-transform: uppercase
+    }
+
+    .time-badge {
+      color: #9db0c0;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace
+    }
+
+    .message-card-body {
+      padding: 14px
+    }
+
+    .result-chips {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap
+    }
+
+    .result-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: #172534;
+      border: 1px solid #2a4155;
+      color: #cfe1ed;
+      font-size: 12px
+    }
+
+    .result-chip strong {
+      color: #5bdc94
+    }
+
+    .result-chip small {
+      color: #8298aa
+    }
+
+    .message-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .credential-saved {
+      color: var(--ok);
+      font-size: 11px;
+      margin-top: 6px
+    }
+
+    @media(max-width:1050px) {
+      .split {
+        grid-template-columns: 1fr
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    @media(max-width:700px) {
+      .page {
+        padding: 22px 14px 92px
+      }
+
+      .header {
+        align-items: flex-start;
+        padding-right: 92px
+      }
+
+      .global-language {
+        top: 14px;
+        right: 14px
+      }
+
+      .lang-switch button {
+        padding: 6px 9px
+      }
+
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+
+      .score-row {
+        grid-template-columns: 100px 1fr 58px
+      }
+
+      .fab {
+        right: 20px;
+        bottom: 22px
+      }
+
+      .hide-mobile {
+        display: none
+      }
+    }
+
+    .scores-extra[hidden] {
+      display: none
+    }
+
+    .scores-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      margin-top: 16px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(17, 182, 232, .08);
+      color: var(--brand);
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .scores-toggle:hover {
+      background: rgba(17, 182, 232, .16);
+      border-color: var(--line-hi)
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="global-language lang-switch" aria-label="Language"><button type="button"
+        data-lang="zh-CN">中</button><button type="button" data-lang="en">EN</button></div>
+    <section id="device-list-view" class="view">
+      <div class="header">
+        <div class="header-main">
+          <div class="eyebrow">Seeed Studio · Device Manager</div>
+          <h1>reCamera Pro <span class="version-badge">v3.9.0</span></h1>
+          <div class="subtitle">管理摄像机、实时流与智能事件</div>
+        </div>
+      </div>
+      <div id="device-grid" class="grid"></div>
+      <button id="add-device" class="fab" title="添加设备">+</button>
+    </section>
+
+    <section id="device-view" class="view" hidden>
+      <div class="header"><button id="back-devices" class="back" aria-label="返回">←</button>
+        <div class="header-main">
+          <div class="eyebrow">Camera</div>
+          <h1 id="device-name"></h1>
+          <div id="device-host" class="subtitle"></div>
+        </div><button id="delete-device" class="btn danger">删除设备</button>
+      </div>
+      <div class="grid">
+        <article class="card clickable feature-card mqtt" data-feature="mqtt">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 7h12m0 0-3-3m3 3-3 3M20 17H8m0 0 3-3m-3 3 3 3" />
+            </svg></div>
+          <div class="name">MQTT 中心</div>
+          <div class="meta">连接配置、JSON 解析模板、消息历史与视觉事件规则</div>
+          <div id="mqtt-feature-status" class="status"><i class="dot"></i>未连接</div>
+        </article>
+        <article class="card clickable feature-card video" data-feature="video">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="5" width="14" height="14" rx="3" />
+              <path d="m17 10 4-2v8l-4-2z" />
+            </svg></div>
+          <div class="name">WebRTC 实时预览</div>
+          <div class="meta">直接拉取设备低延迟音视频流，不嵌入设备 WebUI</div>
+          <div id="video-feature-status" class="status"><i class="dot"></i>待连接</div>
+        </article>
+        <article class="card clickable feature-card acoustics" data-feature="acoustics">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 14v-4m4 7V7m4 13V4m4 13V7m4 7v-4" />
+            </svg></div>
+          <div class="name">声音事件检测</div>
+          <div class="meta">AcousticsLab 实时置信度、阈值规则与 HA Bus 事件</div>
+          <div id="acoustics-feature-status" class="status"><i class="dot"></i>未连接</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="feature-view" class="view" hidden>
+      <div class="header"><button id="back-features" class="back" aria-label="返回">←</button>
+        <div class="header-main">
+          <div class="eyebrow">Feature</div>
+          <h1 id="feature-title"></h1>
+          <div id="feature-device" class="subtitle"></div>
+        </div>
+      </div>
+
+      <div id="mqtt-feature" hidden>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">设备状态</div>
+            <div id="mqtt-state" class="metric-value">—</div>
+            <div class="notice">最近 90 秒是否收到设备推理消息</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Broker 状态</div>
+            <div id="mqtt-broker-state" class="metric-value">—</div>
+            <div class="notice">HA 到 MQTT Broker 的连接状态</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">历史消息</div>
+            <div id="mqtt-count" class="metric-value">0</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">最后检测</div>
+            <div id="last-detection" class="metric-value">—</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">置信度</div>
+            <div id="last-confidence" class="metric-value">—</div>
+          </div>
+        </div>
+        <div class="split">
+          <div class="stack">
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>MQTT 接收</h2>
+                  <div class="notice">“已连接”表示 HA 已连接 Broker；“正在接收”表示最近收到了原厂推理消息。</div>
+                </div><label class="toggle-switch"><input id="mqtt-switch" type="checkbox"><span
+                    class="toggle-track"></span></label>
+              </div>
+              <form id="mqtt-settings-form">
+                <div class="form-grid">
+                  <div class="field"><label>Broker 地址</label><input id="mqtt-broker" required></div>
+                  <div class="field"><label>端口</label><input id="mqtt-port" type="number" min="1" max="65535" required>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <div class="field"><label>Broker 已创建用户名</label><input id="mqtt-username" autocomplete="username"
+                      required></div>
+                  <div class="field"><label>Broker 鉴权密码</label><input id="mqtt-password" type="password"
+                      autocomplete="current-password" placeholder="留空则保持已保存密码">
+                    <div id="mqtt-password-saved" class="credential-saved" hidden>✓ 已安全保存密码；出于安全原因不会回显</div>
+                  </div>
+                </div>
+                <div class="field"><label>事件 Topic（reCamera → HA）</label><input id="mqtt-in" required></div>
+                <div class="notice">保存时会先验证 Broker 鉴权。留空密码表示沿用已保存密码，不会把密码返回浏览器。</div>
+                <div id="mqtt-settings-error" class="error"></div>
+                <div class="actions"><button class="btn primary">保存并重连</button></div>
+              </form>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>JSON 解析模板</h2>
+                  <div class="notice">仅支持原厂目标检测、图像分类和图像分割输出</div>
+                </div>
+              </div>
+              <div class="field"><label>当前模板</label><select id="template-select"></select></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>视觉事件规则</h2>
+                  <div class="notice">按任务类型、类别和置信度匹配结果并发送 HA Bus 事件</div>
+                </div>
+              </div>
+              <form id="mqtt-rule-form">
+                <div class="form-grid">
+                  <div class="field"><label>任务类型</label><select id="mqtt-rule-task">
+                      <option value="*">全部任务</option>
+                      <option value="detection">目标检测</option>
+                      <option value="classification">图像分类</option>
+                      <option value="segmentation">图像分割</option>
+                    </select></div>
+                  <div class="field"><label>类别</label><input id="mqtt-rule-class" value="*"
+                      placeholder="person / car / *"></div>
+                </div>
+                <div class="form-grid">
+                  <div class="field"><label>最低置信度</label><input id="mqtt-rule-confidence" type="number" min="0" max="1"
+                      step="0.01" value="0.8"></div>
+                  <div class="field"><label>冷却时间（秒）</label><input id="mqtt-rule-cooldown" type="number" min="0"
+                      max="3600" step="0.1" value="3"></div>
+                </div>
+                <div class="field"><label>自定义事件名（可选）</label><input id="mqtt-rule-event" pattern="[a-z0-9_]*"
+                    placeholder="detect"></div>
+                <div id="mqtt-rule-error" class="error"></div>
+                <div class="actions"><button class="btn primary">添加规则</button></div>
+              </form>
+              <div id="mqtt-rules" class="rule-list" style="margin-top:16px"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>最近接收消息</h2>
+                  <div class="notice">保留解析结果、原始 JSON 与图片</div>
+                </div><button id="clear-messages" class="btn small ghost">清空</button>
+              </div>
+              <div id="messages" class="messages" style="margin-top:16px">暂无消息</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="video-feature" hidden>
+        <div class="panel">
+          <div class="video-toolbar"><select id="video-stream" class="btn">
+              <option value="main">主码流</option>
+              <option value="sub">子码流</option>
+            </select><button id="video-connect" class="btn primary">连接视频</button><span id="video-status"
+              class="status"><i class="dot"></i>未连接</span></div>
+          <div class="video-shell"><video id="webrtc-video" autoplay playsinline muted controls></video>
+            <div id="video-overlay" class="video-overlay">
+              <div class="video-state"><strong id="video-overlay-title">准备连接设备</strong><span
+                  id="video-overlay-text">点击“连接视频”拉取 WebRTC 流</span></div>
+            </div>
+          </div>
+          <div class="notice">信令通过 Home Assistant 安全代理，视频媒体由浏览器与设备建立 WebRTC 连接；设备密码不会暴露给前端。</div>
+        </div>
+      </div>
+
+      <div id="acoustics-feature" hidden>
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>实时声音置信度</h2>
+            </div>
+            <div id="acoustics-state" class="status"><i class="dot"></i>未连接</div>
+          </div>
+          <div id="scores" class="scores" style="margin-top:20px">暂无推理数据</div>
+        </div>
+        <div class="split">
+          <form id="rule-form" class="panel">
+            <h2>添加声音事件规则</h2>
+            <div class="field"><label>声音类别</label><select id="rule-label" required>
+                <option value="">等待实时类别…</option>
+              </select></div>
+            <div class="form-grid">
+              <div class="field"><label>阈值（%）</label><input id="rule-threshold" type="number" min="0" max="100"
+                  step="0.1" value="80" required></div>
+              <div class="field"><label>冷却时间（秒）</label><input id="rule-cooldown" type="number" min="0" max="3600"
+                  step="0.1" value="5" required></div>
+            </div>
+            <div class="field"><label>规则名称</label><input id="rule-name" placeholder="例如：玻璃破碎告警"></div>
+            <div class="field"><label>HA Bus 事件名</label><input id="rule-event" placeholder="sound_alert"
+                pattern="[a-z0-9_]+" required></div>
+            <div class="notice">未以 recamera_ 开头时系统会自动添加前缀。</div>
+            <div id="rule-error" class="error"></div>
+            <div class="actions"><button class="btn primary">保存规则</button></div>
+          </form>
+          <div class="panel">
+            <h2>已配置声音规则</h2>
+            <div id="rules" class="rule-list" style="margin-top:16px">暂无规则</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="add-modal" class="modal-bg">
+    <form id="add-form" class="modal">
+      <div class="eyebrow">New Camera</div>
+      <h2>添加 reCamera Pro</h2>
+      <div class="field"><label>设备名称</label><input name="device_name" value="reCamera Pro" required></div>
+      <div class="field"><label>IP 地址</label><input name="host" placeholder="192.168.42.1" required></div>
+      <div class="field"><label>设备用户名</label><input name="device_username" value="root" required></div>
+      <div class="field"><label>设备密码（可选）</label><input name="device_password" type="password"></div>
+      <div id="add-error" class="error"></div>
+      <div class="actions"><button type="button" id="cancel-add" class="btn">取消</button><button
+          class="btn primary">连接并添加</button></div>
+    </form>
+  </div>
+  <div id="delete-modal" class="modal-bg">
+    <div class="modal">
+      <div class="eyebrow">Remove Camera</div>
+      <h2>删除设备？</h2>
+      <div id="delete-text" class="subtitle"></div>
+      <div id="delete-error" class="error"></div>
+      <div class="actions"><button id="cancel-delete" class="btn">取消</button><button id="confirm-delete"
+          class="btn danger">确认删除</button></div>
+    </div>
+  </div>
+  <script src="/recamera_pro_static/panel-v36-app.js?v=3.9.1"></script>
+</body>
+
+</html>

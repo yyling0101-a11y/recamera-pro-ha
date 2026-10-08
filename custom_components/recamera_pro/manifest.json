@@ -1,0 +1,14 @@
+{
+  "domain": "recamera_pro",
+  "name": "reCamera Pro",
+  "version": "3.9.0",
+  "documentation": "https://wiki.seeedstudio.com/",
+  "issue_tracker": "https://wiki.seeedstudio.com/",
+  "codeowners": ["@seeed"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http", "panel_custom"],
+  "requirements": ["aiomqtt==2.5.1"],
+  "integration_type": "device",
+  "iot_class": "local_push"
+}
+
