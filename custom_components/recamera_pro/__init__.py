@@ -1641,7 +1641,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             webcomponent_name="recamera-pro",
             sidebar_title="reCamera Pro",
             sidebar_icon="recamera:pro",
-            module_url="/recamera_pro_static/panel-v36.js?v=3.9.1",
+            module_url="/recamera_pro_static/panel-v36.js?v=3.9.2",
             require_admin=True,
         )
         hass.data[f"{DOMAIN}_panel_registered"] = True

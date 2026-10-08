@@ -1,5 +1,8 @@
 # reCamera Pro for Home Assistant
 
+[![HACS Action](https://github.com/yyling0101-a11y/recamera-pro-ha/actions/workflows/hacs.yml/badge.svg)](https://github.com/yyling0101-a11y/recamera-pro-ha/actions/workflows/hacs.yml)
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+
 本项目是面向 reCamera Pro 原厂固件的 Home Assistant 本地自定义集成，提供多设备管理、MQTT 推理事件、WebRTC 实时预览、AcousticsLab 声音规则和 HA Bus 事件。
 
 This is a local Home Assistant custom integration for factory reCamera Pro firmware. It provides multi-device management, MQTT inference events, WebRTC preview, AcousticsLab sound rules, and HA Bus events.
@@ -13,23 +16,58 @@ This is a local Home Assistant custom integration for factory reCamera Pro firmw
 
 The integration never modifies or uploads code to the camera. It subscribes only to the configured factory event topic and supports factory detection, classification, and segmentation payloads.
 
+## 前置条件 / Requirements
+
+- Home Assistant **2025.1** 或更新版本，管理员账号（侧边栏面板 `require_admin`）。
+- 运行**原厂固件**的 reCamera Pro，与 Home Assistant 处于同一局域网。
+- 一个 **MQTT Broker**：HA OS 可安装 “Mosquitto broker” 加载项；HA Container 可用 `install.sh --mqtt=create` 创建独立 Sidecar。
+- Python 依赖 `aiomqtt==2.5.1` 已声明在 `manifest.json`，由 Home Assistant 自动安装，无需手动 `pip install`。
+
+- Home Assistant **2025.1** or newer, with an admin account (the sidebar panel is admin-only).
+- A reCamera Pro running **factory firmware**, on the same LAN as Home Assistant.
+- An **MQTT broker**: install the “Mosquitto broker” add-on on HA OS, or let `install.sh --mqtt=create` create an isolated sidecar on HA Container.
+- The `aiomqtt==2.5.1` dependency is declared in `manifest.json` and installed automatically by Home Assistant.
+
 ## 安装 / Installation
 
-### HACS（开源发布推荐）
+### 方式一：HACS（HA OS / Supervised / Container 通用，推荐）
 
-1. 将仓库添加为 HACS 自定义仓库，类别选择 **Integration**。
-2. 安装 **reCamera Pro**。
-3. 在 `configuration.yaml` 添加：
+先安装 [HACS](https://hacs.xyz)，然后：
 
-```yaml
-recamera_pro:
+1. HACS → 右上角 **⋮** → **Custom repositories**（自定义仓库）。
+2. 仓库地址填下面这一行，**Category 选择 Integration**，保存：
+
+   ```text
+   https://github.com/yyling0101-a11y/recamera-pro-ha
+   ```
+
+3. HACS → **Integrations** → 搜索 **reCamera Pro** → **Download** → 安装完成后重启 Home Assistant。
+4. 在 `configuration.yaml` 中加入（HACS 不会修改 YAML，这一步必须手动做）：
+
+   ```yaml
+   recamera_pro:
+   ```
+
+5. 再次重启 Home Assistant，侧边栏出现 **reCamera Pro** 面板，从面板中添加摄像机。
+
+> 侧边栏面板、静态资源和 HTTP API 由集成的 `async_setup` 注册，只有 `configuration.yaml` 中存在 `recamera_pro:` 时才会在启动阶段被调用，因此这一行是必需的。
+
+HACS 负责安装、升级和卸载集成代码（升级后需重启）。删除单台摄像机请在 reCamera Pro 侧边栏设备卡片或 Home Assistant 的“设备与服务”中完成。
+
+Install [HACS](https://hacs.xyz), add `https://github.com/yyling0101-a11y/recamera-pro-ha` as a **custom repository** with category **Integration**, download **reCamera Pro**, restart, then add `recamera_pro:` to `configuration.yaml` and restart again. The YAML key is required: the sidebar panel, static assets and HTTP views are registered from `async_setup`.
+
+### 方式二：手动安装（任何部署方式）
+
+```sh
+cd /path/to/home-assistant-config/custom_components
+git clone --depth 1 https://github.com/yyling0101-a11y/recamera-pro-ha.git /tmp/recamera-pro-ha
+cp -r /tmp/recamera-pro-ha/custom_components/recamera_pro ./recamera_pro
+rm -rf /tmp/recamera-pro-ha
 ```
 
-4. 重启 Home Assistant，随后从侧边栏添加设备。
+随后在 `configuration.yaml` 加入 `recamera_pro:` 并重启 Home Assistant。HA OS 用户可通过 **Advanced SSH & Web Terminal**、**Terminal & SSH** 或 **Studio Code Server** 加载项执行上述命令（配置目录挂载在 `/config`）。
 
-HACS 负责安装、升级和卸载集成代码。删除单台摄像机请在 reCamera Pro 侧边栏设备卡片或 Home Assistant 的“设备与服务”中完成。
-
-### 一键脚本（HA Core / 官方 HA Container）
+### 方式三：一键脚本（HA Core / 官方 HA Container）
 
 解压发布包后运行：
 
