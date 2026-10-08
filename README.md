@@ -136,3 +136,9 @@ Home Assistant Container includes the MQTT integration but no broker. Install de
 - 视觉事件规则可按任务类型、类别和置信度触发 HA Bus 事件；缺少前缀时会自动添加 `recamera_`。
 
 Broker credentials must already exist on the Broker. The integration validates them before saving. Visual rules match task type, class, and confidence and fire HA Bus events with a `recamera_` prefix.
+
+## 许可证 / License
+
+Apache License 2.0，详见 [LICENSE](LICENSE)。
+
+Apache License 2.0. See [LICENSE](LICENSE).
