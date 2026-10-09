@@ -41,20 +41,16 @@ The integration never modifies or uploads code to the camera. It subscribes only
    https://github.com/yyling0101-a11y/recamera-pro-ha
    ```
 
-3. HACS → **Integrations** → 搜索 **reCamera Pro** → **Download** → 安装完成后重启 Home Assistant。
-4. 在 `configuration.yaml` 中加入（HACS 不会修改 YAML，这一步必须手动做）：
+3. HACS → **Integrations** → 搜索 **reCamera Pro** → **Download**（首次安装 HACS 会自动重载自定义组件，通常无需重启；若“添加集成”里搜不到，重启一次 Home Assistant 即可）。
+4. **设置 → 设备与服务 → 添加集成** → 搜索 **reCamera Pro** → 填写一台在线 reCamera 的 IP / 设备账号 / 密码 → 提交。
+5. 添加成功后，侧边栏自动出现 **reCamera Pro** 面板，**无需任何 YAML 或终端操作**。
 
-   ```yaml
-   recamera_pro:
-   ```
+> 说明：侧边栏面板、静态资源和 HTTP API 在集成被加载时注册；通过“添加集成”创建设备条目即可触发加载，因此**正常流程不需要写 `configuration.yaml`**。
+> 只有当你想在**尚未添加任何摄像机**时就先看到面板，才需要手动在 `configuration.yaml` 加一行 `recamera_pro:` 并重启（HAOS 上可用 Studio Code Server / Terminal 等加载项编辑）。
 
-5. 再次重启 Home Assistant，侧边栏出现 **reCamera Pro** 面板，从面板中添加摄像机。
+HACS 负责安装、升级和卸载集成代码。删除单台摄像机请在 reCamera Pro 侧边栏设备卡片或 Home Assistant 的“设备与服务”中完成。
 
-> 侧边栏面板、静态资源和 HTTP API 由集成的 `async_setup` 注册，只有 `configuration.yaml` 中存在 `recamera_pro:` 时才会在启动阶段被调用，因此这一行是必需的。
-
-HACS 负责安装、升级和卸载集成代码（升级后需重启）。删除单台摄像机请在 reCamera Pro 侧边栏设备卡片或 Home Assistant 的“设备与服务”中完成。
-
-Install [HACS](https://hacs.xyz), add `https://github.com/yyling0101-a11y/recamera-pro-ha` as a **custom repository** with category **Integration**, download **reCamera Pro**, restart, then add `recamera_pro:` to `configuration.yaml` and restart again. The YAML key is required: the sidebar panel, static assets and HTTP views are registered from `async_setup`.
+Install [HACS](https://hacs.xyz), add `https://github.com/yyling0101-a11y/recamera-pro-ha` as a **custom repository** with category **Integration**, then download **reCamera Pro**. Next go to **Settings → Devices & Services → Add integration → reCamera Pro** and add a camera; the sidebar panel appears automatically — no YAML or terminal needed. The `recamera_pro:` line in `configuration.yaml` is only required if you want the panel visible before adding any device.
 
 ### 方式二：手动安装（任何部署方式）
 
