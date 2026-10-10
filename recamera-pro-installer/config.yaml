@@ -1,0 +1,20 @@
+# https://developers.home-assistant.io/docs/apps/configuration#app-configuration
+name: reCamera Pro Installer
+version: "3.9.2"
+slug: recamera-pro-installer
+description: >-
+  Installs the reCamera Pro custom integration into Home Assistant. No terminal
+  and no HACS needed: install this app, start it once, then restart Home
+  Assistant and add a reCamera Pro device.
+url: https://github.com/yyling0101-a11y/recamera-pro-ha
+arch:
+  - aarch64
+  - amd64
+startup: once
+boot: manual_only
+init: false
+panel_icon: mdi:cctv
+map:
+  - type: homeassistant_config
+    read_only: false
+    path: /config

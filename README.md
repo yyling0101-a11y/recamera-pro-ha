@@ -52,7 +52,44 @@ HACS 负责安装、升级和卸载集成代码。删除单台摄像机请在 re
 
 Install [HACS](https://hacs.xyz), add `https://github.com/yyling0101-a11y/recamera-pro-ha` as a **custom repository** with category **Integration**, then download **reCamera Pro**. Next go to **Settings → Devices & Services → Add integration → reCamera Pro** and add a camera; the sidebar panel appears automatically — no YAML or terminal needed. The `recamera_pro:` line in `configuration.yaml` is only required if you want the panel visible before adding any device.
 
-### 方式二：手动安装（任何部署方式）
+### 方式二：Home Assistant Apps 安装（HA OS / Supervisor）
+
+适用于 **Home Assistant OS** 和其他支持 Supervisor Apps 的安装，不适用于普通 **Home Assistant Container**。本仓库同时是一个 **Home Assistant App（旧称加载项）仓库**，内含一次性安装器
+`recamera-pro-installer`：它把 `custom_components/recamera_pro` 复制到
+`/config/custom_components/`，全程只需在网页界面点几下。
+
+[![打开 Home Assistant 并添加本仓库](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fyyling0101-a11y%2Frecamera-pro-ha)
+
+1. 打开 **Settings → Apps → Install app → Repositories**（部分旧版显示为 **Settings → Add-ons → Add-on Store → ⋮ → Repositories**）。
+2. 添加下面的 GitHub 仓库 URL 并保存：
+
+   ```text
+   https://github.com/yyling0101-a11y/recamera-pro-ha
+   ```
+
+3. 找到 **reCamera Pro Installer**，点击 **Install**，安装完成后点击 **Start**。安装器运行一次后自动停止，日志出现 `reCamera Pro <版本> is installed` 即成功。首次安装需要设备能访问 `ghcr.io` 和 `codeload.github.com` 以构建镜像。
+4. 安装后需要重启 Home Assistant Core：**Settings → System → 右上角 ⋮ → Restart Home Assistant**。安装器不会调用 Supervisor API 或自动重启 Core。
+5. **设置 → 设备与服务 → 添加集成 → reCamera Pro**，填写一台在线 reCamera 的
+   IP / 设备账号 / 密码。侧边栏面板随后自动出现，**不需要写任何 YAML**。
+
+Apps 安装的是 **reCamera Pro 集成安装器**；实际摄像机管理、MQTT、WebRTC、设备配置和侧边栏面板仍由 Custom Integration 提供。安装器不修改 `configuration.yaml`，也不需要 SSH、终端或 HACS。MQTT Broker 仍需提供：HA OS 可在内置商店安装 **Mosquitto broker**。
+
+> 升级：维护者更新 `recamera-pro-installer/Dockerfile` 中固定的源码 commit 和 SHA-256，并同步更新集成/App 版本；用户在商店中点 **更新** 后重新启动安装器。旧版本会被移动到
+> `/config/.recamera-pro-backups/`，不会直接删除。
+> 已由 HACS 管理 `recamera_pro` 的用户应继续通过 HACS 更新；若检测到 HACS 和已有同名集成，Apps 安装器会停止，避免两个更新机制管理同一目录。
+> 卸载集成：卸载该加载项不会删除集成文件，请删除
+> `/config/custom_components/recamera_pro` 后重启（详见
+> [`recamera-pro-installer/DOCS.md`](recamera-pro-installer/DOCS.md)）。
+
+For English instructions, follow **Settings → Apps → Install app → Repositories**,
+add the repository URL above, install and start **reCamera Pro Installer**, restart
+Home Assistant Core, then add **reCamera Pro** under **Settings → Devices & Services**.
+The App is only an installer; all camera features are provided by the Custom
+Integration. This method requires Home Assistant OS or another Supervisor Apps
+installation and does not apply to plain Home Assistant Container. See
+[`recamera-pro-installer/DOCS.md`](recamera-pro-installer/DOCS.md).
+
+### 方式三：手动安装（任何部署方式）
 
 ```sh
 cd /path/to/home-assistant-config/custom_components
@@ -63,7 +100,7 @@ rm -rf /tmp/recamera-pro-ha
 
 随后在 `configuration.yaml` 加入 `recamera_pro:` 并重启 Home Assistant。HA OS 用户可通过 **Advanced SSH & Web Terminal**、**Terminal & SSH** 或 **Studio Code Server** 加载项执行上述命令（配置目录挂载在 `/config`）。
 
-### 方式三：一键脚本（HA Core / 官方 HA Container）
+### 方式四：一键脚本（HA Core / 官方 HA Container）
 
 解压发布包后运行：
 
@@ -81,7 +118,7 @@ sudo ./install.sh install /path/to/home-assistant-config
 
 安装采用临时目录与原子移动，并备份旧版本。卸载只接受带有本安装器标记且 manifest 域为 `recamera_pro` 的目录，然后将其移动到 `.recamera-pro-backups`，不会递归删除其他集成或用户配置。脚本只移除自己写入的 YAML 标记块。
 
-HA OS、Supervised 以及无法从宿主机写入 `/config` 的部署请使用 HACS。无法安全承诺一个宿主机脚本覆盖所有第三方 Docker 封装、权限模型和只读挂载；HACS 是 Home Assistant 生态中面向这些环境的标准安装/升级/卸载方式。
+HA OS、Supervised 以及无法从宿主机写入 `/config` 的部署请使用方式一（HACS）或方式二（加载项仓库）。无法安全承诺一个宿主机脚本覆盖所有第三方 Docker 封装、权限模型和只读挂载；HACS 是 Home Assistant 生态中面向这些环境的标准安装/升级/卸载方式。
 
 ## MQTT Broker 自动处理 / Broker auto-setup
 

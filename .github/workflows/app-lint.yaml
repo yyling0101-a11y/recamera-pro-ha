@@ -1,0 +1,19 @@
+name: App Lint
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint reCamera Pro App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run Home Assistant App Lint
+        uses: frenck/action-app-linter@v2.21.1
+        with:
+          path: ./recamera-pro-installer
