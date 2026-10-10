@@ -7,6 +7,7 @@ description: >-
   and no HACS needed: install this app, start it once, then restart Home
   Assistant and add a reCamera Pro device.
 url: https://github.com/yyling0101-a11y/recamera-pro-ha
+image: ghcr.io/yyling0101-a11y/recamera-pro-installer
 arch:
   - aarch64
   - amd64

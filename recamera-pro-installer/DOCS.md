@@ -6,8 +6,10 @@ On start the app copies the `recamera_pro` integration bundled into its image
 into `/config/custom_components/recamera_pro`. It never touches
 `configuration.yaml`, never writes to the camera and never opens network ports.
 
-The image is built from a fixed repository commit and verifies the SHA-256 of the
-complete source archive. It does not download or execute scripts when it runs.
+The multi-architecture image is published to GitHub Container Registry by the
+repository's GitHub Actions workflow. It is built from a fixed source commit and
+verifies the SHA-256 of the complete source archive. HAOS downloads the finished
+image; the App does not download or execute scripts when it runs.
 
 ## Install
 
@@ -28,8 +30,10 @@ from the built-in store.
 
 When publishing an integration update, update the fixed source commit and its
 archive SHA-256 in `Dockerfile`, then set the app `version` to the integration
-manifest version. Publish that source commit, update the app, then start it
-again. The previous copy is moved to
+manifest version. Push to `main` and wait for **Publish reCamera Pro Installer
+App** to complete before asking users to update. Make sure the GHCR package is
+public (GitHub → Packages → `reCamera Pro Installer` → Package settings → Change visibility → Public).
+Users can then update the app and start it again. The previous copy is moved to
 `/config/.recamera-pro-backups/recamera_pro-<timestamp>/` instead of being
 deleted. HACS users should continue updating through HACS; do not let HACS and
 this app manage the same integration directory.
@@ -44,9 +48,10 @@ Server or Samba share app, then restart Home Assistant. Backups in
 
 ## Troubleshooting
 
-- **Build fails while installing the app**: the device must reach
-  `ghcr.io` (base image) and `codeload.github.com` (integration sources) during
-  the image build. Check the app store build log.
+- **The app image cannot be downloaded**: confirm the HAOS host can reach
+  `ghcr.io` over HTTPS and that the published package is public. The GitHub
+  Actions workflow builds the image; HAOS does not need Docker Hub access to
+  build the App locally.
 - **`/config is not available`**: the app needs the Home Assistant config
   mapping; reinstall it without editing its configuration.
 - **Existing HACS integration**: keep updating it with HACS, or remove the

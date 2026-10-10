@@ -67,7 +67,7 @@ Install [HACS](https://hacs.xyz), add `https://github.com/yyling0101-a11y/recame
    https://github.com/yyling0101-a11y/recamera-pro-ha
    ```
 
-3. 找到 **reCamera Pro Installer**，点击 **Install**，安装完成后点击 **Start**。安装器运行一次后自动停止，日志出现 `reCamera Pro <版本> is installed` 即成功。首次安装需要设备能访问 `ghcr.io` 和 `codeload.github.com` 以构建镜像。
+3. 找到 **reCamera Pro Installer**，点击 **Install**，安装完成后点击 **Start**。安装器运行一次后自动停止，日志出现 `reCamera Pro <版本> is installed` 即成功。设备需要能访问 GitHub 和 `ghcr.io` 下载预构建 App 镜像；若还不能下载，请确认维护者已将 GHCR package 设为 Public。
 4. 安装后需要重启 Home Assistant Core：**Settings → System → 右上角 ⋮ → Restart Home Assistant**。安装器不会调用 Supervisor API 或自动重启 Core。
 5. **设置 → 设备与服务 → 添加集成 → reCamera Pro**，填写一台在线 reCamera 的
    IP / 设备账号 / 密码。侧边栏面板随后自动出现，**不需要写任何 YAML**。
@@ -76,6 +76,7 @@ Apps 安装的是 **reCamera Pro 集成安装器**；实际摄像机管理、MQT
 
 > 升级：维护者更新 `recamera-pro-installer/Dockerfile` 中固定的源码 commit 和 SHA-256，并同步更新集成/App 版本；用户在商店中点 **更新** 后重新启动安装器。旧版本会被移动到
 > `/config/.recamera-pro-backups/`，不会直接删除。
+> 镜像由 GitHub Actions 预构建并发布到 GHCR；仓库维护者首次发布后需在 GitHub 的 **Packages → Package settings** 将 Container package 设为 **Public**。
 > 已由 HACS 管理 `recamera_pro` 的用户应继续通过 HACS 更新；若检测到 HACS 和已有同名集成，Apps 安装器会停止，避免两个更新机制管理同一目录。
 > 卸载集成：卸载该加载项不会删除集成文件，请删除
 > `/config/custom_components/recamera_pro` 后重启（详见
